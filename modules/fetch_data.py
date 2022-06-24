@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
+
 def get_open_data_elia_df(dataset, start_date, end_date):
     """Gets and returns the selected dataset from the Elia Open Data Platform within a given time range
 

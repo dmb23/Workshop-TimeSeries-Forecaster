@@ -1,18 +1,17 @@
+from datetime import datetime, timedelta
 from doctest import DocFileCase
 from lib2to3.pgen2.pgen import DFAState
-import streamlit as st
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 
+import numpy as np
+import pandas as pd
+import streamlit as st
 
 from modules.download_button import download_button
 from modules.fetch_data import get_open_data_elia_df
+from modules.forecast_multivariate import (prepare_data_for_mv_fc,
+                                           run_forecast_multivariate)
 from modules.forecast_univariate import run_forecast_univariate
-from modules.forecast_multivariate import prepare_data_for_mv_fc, run_forecast_multivariate
 from modules.helper import check_regressors
-
-
 
 st.image("data/TimeSeriesForecaster.png")
 """
@@ -36,8 +35,9 @@ You can choose between univariate and multivariate forecasting:
 """
 
 forecast_model = st.radio(
-     "Select your forecasting method:",
-     ('Univariate', 'Multivariate'))
+    "Select your forecasting method:",
+    ('Univariate', 'Multivariate')
+)
 
 st.markdown(
     """ ### Data Selection 
@@ -45,8 +45,7 @@ st.markdown(
     )
 
  # add a input field that allows you to select ["Total Load","PV production","Wind production"] and stores it in a variable called  "option"
-
-## YOUR CODE HERE ##
+option = st.selectbox("", ["Total Load", "PV production", "Wind production"])
 
 
 """
@@ -64,7 +63,7 @@ col1, col2 = st.columns(2)
 no_days = col1.slider("Historical data in days.", min_value=1, max_value=14 )
 
 # add another slide that select the "Forecast Horizon in days" and stores it in a variable called "button_periods_to_predict"
-
+button_periods_to_predict = col2.slider("Forecast Horizon in days", min_value=1, max_value=7)
 ## YOUR CODE HERE ##
 
 
@@ -192,16 +191,16 @@ if forecast_ready:
     """
 
     # Plot the variable "fig_forecast"
-    ## YOUR CODE HERE ##
+    st.pyplot(fig_forecast)
 
     # make a selection of the most import columns fo the "forecast" dataframe and display them in a table (and rename column "ds" to "datetime")
-    ## YOUR CODE HERE ##
+    st.table(forecast.iloc[-20:].loc[:, ["ds", "yhat"]].rename(columns={'ds': 'datetime'}))
 
     # add a heading "Components Plot"
-    ## YOUR CODE HERE ##
+    st.header("Components Plot")
 
     # plot the variable fig_components plot
-    ## YOUR CODE HERE ##
+    st.pyplot(fig_comp)
     
     if reg_coef is not None:
 
